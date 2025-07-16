@@ -24,7 +24,7 @@ struct NavigationPage: View {
                         .padding(.top, 50)
                     Spacer()
                     
-                    NavigationLink(destination: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Destination@*/Text("Destination")/*@END_MENU_TOKEN@*/) {
+                    NavigationLink(destination: popUp()) {
                         Text("Pop ups")
                             .font(.custom("Lobster-Regular", size: 30))
                             .foregroundColor(Color(red: 0.835, green: 0.333, blue: 0.314))
@@ -35,8 +35,8 @@ struct NavigationPage: View {
                             .padding(.bottom, 100)
                     }//closing of NavLink
                     
-                    NavigationLink(destination: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Destination@*/Text("Destination")/*@END_MENU_TOKEN@*/) {
-                        Text("Resturants")
+                    NavigationLink(destination: SwiftUIView__k()) {
+                        Text("Restaurants")
                             .font(.custom("Lobster-Regular", size: 30))
                             .foregroundColor(Color(red: 0.835, green: 0.333, blue: 0.314))
                             .padding(.horizontal, 24)
@@ -46,7 +46,7 @@ struct NavigationPage: View {
                             .padding(.bottom, 100)
                     }//closing of NavLink
                     
-                    NavigationLink(destination: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Destination@*/Text("Destination")/*@END_MENU_TOKEN@*/) {
+                    NavigationLink(destination: AboutUsPage()) {
                         Text("About Us")
                             .font(.custom("Lobster-Regular", size: 30))
                             .foregroundColor(Color(red: 0.835, green: 0.333, blue: 0.314))
