@@ -13,86 +13,118 @@ struct SwiftUIView__k: View {
     @Environment(\.modelContext) private var context
 
     @State private var searchText = ""
-    @State private var selectedPriceIndex = 0
-    @State private var selectedCuisineIndex = 0
-    @State private var maxDistance: Double = 10.0
     @State private var displayedRestaurants: [Restaurant] = []
+    @State private var hasAddedSampleData = false
 
-    let priceOptions = ["All Prices", "$5–15", "$15–25", "$25–35", "$35–45", "$45–55", "$55+"]
-    let cuisineOptions = ["All Cuisines", "Italian", "Indian", "Mexican", "Chinese", "Japanese", "Deli", "American", "Mediterranean", "Thai", "French"]
+    var budget: Double
+    var maxDistance: Double
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                TextField("Search restaurants", text: $searchText)
+                TextField("Search restaurants by name", text: $searchText)
                     .textFieldStyle(.roundedBorder)
                     .padding(.horizontal)
 
-                HStack {
-                    Picker("Price", selection: $selectedPriceIndex) {
-                        ForEach(priceOptions.indices, id: \.self) { i in
-                            Text(priceOptions[i])
-                        }
-                    }
-                    .pickerStyle(.menu)
-
-                    Picker("Cuisine", selection: $selectedCuisineIndex) {
-                        ForEach(cuisineOptions.indices, id: \.self) { i in
-                            Text(cuisineOptions[i])
-                        }
-                    }
-                    .pickerStyle(.menu)
-                }
-                .padding(.horizontal)
-
-                VStack(alignment: .leading) {
-                    Text("Max Distance: \(String(format: "%.1f", maxDistance)) mi")
-                    Slider(value: $maxDistance, in: 1...30, step: 0.5)
-                }
-                .padding(.horizontal)
-
-                Button("Search") {
-                    applyFilters()
-                }
-                .padding(.bottom, 5)
-
-                List(displayedRestaurants) { restaurant in
-                    VStack(alignment: .leading) {
-                        Text(restaurant.name)
+                if displayedRestaurants.isEmpty {
+                    VStack {
+                        Text("No restaurants found")
                             .font(.headline)
-                        Text("\(restaurant.cuisine) • \(restaurant.priceRange) • \(String(format: "%.1f", restaurant.distance)) mi")
+                            .foregroundColor(.gray)
+                        Text("Try adjusting your search")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
-                    .padding(.vertical, 4)
+                    .padding()
+                } else {
+                    List(displayedRestaurants, id: \.id) { restaurant in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(restaurant.name)
+                                .font(.headline)
+                            Text("\(restaurant.cuisine) • \(restaurant.priceRange) • \(String(format: "%.1f", restaurant.distance)) mi")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.vertical, 2)
+                    }
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
 
                 Spacer()
             }
             .navigationTitle("Restaurants")
             .onAppear {
-                if restaurants.isEmpty {
-                    addSampleRestaurants()
-                } else {
-                    displayedRestaurants = restaurants
-                }
+                setupRestaurants()
+            }
+            .onChange(of: searchText) {
+                applyFilters()
             }
         }
     }
 
-    func applyFilters() {
-        displayedRestaurants = restaurants.filter { r in
-            let matchesSearch = searchText.isEmpty || r.name.localizedCaseInsensitiveContains(searchText)
-            let matchesPrice = priceOptions[selectedPriceIndex] == "All Prices" || r.priceRange == priceOptions[selectedPriceIndex]
-            let matchesCuisine = cuisineOptions[selectedCuisineIndex] == "All Cuisines" || r.cuisine == cuisineOptions[selectedCuisineIndex]
-            let matchesDistance = r.distance <= maxDistance
-
-            return matchesSearch && matchesPrice && matchesCuisine && matchesDistance
+    func setupRestaurants() {
+        if !hasAddedSampleData {
+            addSampleRestaurants()
+            hasAddedSampleData = true
         }
+        applyFilters()
+    }
+
+    func applyFilters() {
+        displayedRestaurants = restaurants.filter { restaurant in
+            let matchesSearch = searchText.isEmpty ||
+                               restaurant.name.localizedCaseInsensitiveContains(searchText)
+            let matchesDistance = restaurant.distance <= maxDistance
+            let matchesBudget = priceMatches(budget: budget, priceRange: restaurant.priceRange)
+
+            return matchesSearch && matchesDistance && matchesBudget
+        }
+        
+        print("Applied filters:")
+        print("Search: '\(searchText)'")
+        print("Budget: $\(budget)")
+        print("Max Distance: \(maxDistance) mi")
+        print("Found \(displayedRestaurants.count) restaurants")
+    }
+
+    func priceMatches(budget: Double, priceRange: String) -> Bool {
+        let cleaned = priceRange.replacingOccurrences(of: "$", with: "")
+        
+        let separators = ["–", "-", " - "]
+        var parts: [String] = []
+        
+        for separator in separators {
+            if cleaned.contains(separator) {
+                parts = cleaned.components(separatedBy: separator)
+                break
+            }
+        }
+        
+        if parts.isEmpty {
+            parts = [cleaned]
+        }
+        
+        guard let minPrice = Double(parts.first?.trimmingCharacters(in: .whitespaces) ?? "") else {
+            return true
+        }
+        
+        if parts.count == 1 {
+            return budget >= minPrice
+        }
+        
+        guard let maxPrice = Double(parts.last?.trimmingCharacters(in: .whitespaces) ?? "") else {
+            return budget >= minPrice
+        }
+        
+        return budget >= minPrice && budget <= maxPrice
     }
 
     func addSampleRestaurants() {
+        // Clear existing restaurants first
+        for restaurant in restaurants {
+            context.delete(restaurant)
+        }
+        
         let samples: [Restaurant] = [
             Restaurant(name: "Pho Real", priceRange: "$15–25", distance: 2.1, cuisine: "Vietnamese"),
             Restaurant(name: "Taco Galaxy", priceRange: "$5–15", distance: 1.4, cuisine: "Mexican"),
@@ -135,14 +167,21 @@ struct SwiftUIView__k: View {
             Restaurant(name: "Mediterraneo", priceRange: "$35–45", distance: 4.0, cuisine: "Mediterranean"),
             Restaurant(name: "Pad Thai Palace", priceRange: "$25–35", distance: 3.1, cuisine: "Thai")
         ]
+        
         for restaurant in samples {
             context.insert(restaurant)
         }
-        displayedRestaurants = samples
+        
+        do {
+            try context.save()
+            print("Successfully added \(samples.count) restaurants")
+        } catch {
+            print("Error saving restaurants: \(error)")
+        }
     }
 }
 
 #Preview {
-    SwiftUIView__k()
+    SwiftUIView__k(budget: 20, maxDistance: 10)
         .modelContainer(for: Restaurant.self, inMemory: true)
 }

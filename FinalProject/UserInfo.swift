@@ -5,37 +5,37 @@
 //  Created by Keely Hong on 7/15/25.
 //
 
-
 import SwiftUI
 
 struct UserInfo: View {
-    @State private var budget: Double = 5 //variable that tracks user's budget
-    @State private var hotdogBounce: Bool = false //variable that controls bounce animation on the hotdog
+    @State private var budget: Double = 5 // Budget slider (5 to 100+)
+    @State private var maxDistance: Double = 10.0 // Distance slider (1 to 30 miles)
+    @State private var hotdogBounce: Bool = false
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         VStack(spacing: 40) {
-            Text("Budget Slider") //title
+            Text("Select Your Budget")
                 .font(.title)
                 .bold()
 
             VStack(spacing: 16) {
-                Text("Utilize the slider to select your budget!")
+                Text("Use the slider to select your budget!")
                     .font(.headline)
 
                 GeometryReader { geometry in
-                    let sliderWidth = geometry.size.width - 32 //slider to for the hotdog
+                    let sliderWidth = geometry.size.width - 32
 
                     ZStack(alignment: .leading) {
                         Capsule()
                             .fill(Color.gray.opacity(0.3))
-                            .frame(height: 8) //modifications
+                            .frame(height: 8)
 
                         Capsule()
                             .fill(Color.gray)
                             .frame(width: sliderWidth * CGFloat((budget - 5) / 95), height: 8)
 
-                        Image("hotdog") //hotdog slider
+                        Image("hotdog")
                             .resizable()
                             .frame(width: 60, height: 30)
                             .scaleEffect(hotdogBounce ? 1.1 : 1.0)
@@ -75,8 +75,20 @@ struct UserInfo: View {
                     .foregroundColor(.gray)
             }
 
+            VStack(spacing: 16) {
+                Text("Select Max Distance")
+                    .font(.title2)
+                    .bold()
+
+                VStack(alignment: .leading) {
+                    Text("Max Distance: \(String(format: "%.1f", maxDistance)) mi")
+                    Slider(value: $maxDistance, in: 1...30, step: 0.5)
+                }
+                .padding(.horizontal)
+            }
+
             HStack(spacing: 40) {
-                Button("Back") { //navigation between during interfaces
+                Button("Back") {
                     dismiss()
                 }
                 .foregroundColor(.white)
@@ -84,13 +96,13 @@ struct UserInfo: View {
                 .background(Color.gray)
                 .cornerRadius(10)
 
-                Button("Next") {
-                    print("Selected budget: \(Int(budget))")
+                NavigationLink(destination: SwiftUIView__k(budget: budget, maxDistance: maxDistance)) {
+                    Text("Next")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(10)
                 }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.blue)
-                .cornerRadius(10)
             }
         }
         .padding()
@@ -104,6 +116,3 @@ struct UserInfo: View {
         UserInfo()
     }
 }
-
-
-
