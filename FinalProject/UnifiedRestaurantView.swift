@@ -9,43 +9,36 @@ import SwiftUI
 import SwiftData
 
 struct UnifiedRestaurantView: View {
-    // Fetch all restaurants from SwiftData
     @Query private var restaurants: [Restaurant]
     @Environment(\.modelContext) private var context
-
-    // State variables for filters
+    
     @State private var searchText = ""
     @State private var selectedCuisineIndex = 0
     @State private var displayedRestaurants: [Restaurant] = []
     @State private var budget: Double = 30
     @State private var distance: Double = 5
-
-    // Cuisine options
+    
     let cuisineOptions = [
         "All Cuisines", "Italian", "Indian", "Mexican", "Chinese", "Japanese",
         "Deli", "American", "Mediterranean", "Thai", "French", "Vietnamese"
     ]
-
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    
-                    // ✅ Title
                     Text("Find Your Next NYC Bite")
                         .font(.largeTitle)
                         .bold()
                         .padding(.top)
-
-                    // ✅ Search Bar
+                    
                     TextField("Search restaurants", text: $searchText)
                         .textFieldStyle(.roundedBorder)
                         .padding(.horizontal)
                         .onChange(of: searchText) {
                             applyFilters()
                         }
-
-                    // ✅ Cuisine Picker
+                    
                     Picker("Cuisine", selection: $selectedCuisineIndex) {
                         ForEach(cuisineOptions.indices, id: \.self) {
                             Text(cuisineOptions[$0])
@@ -56,8 +49,7 @@ struct UnifiedRestaurantView: View {
                     .onChange(of: selectedCuisineIndex) {
                         applyFilters()
                     }
-
-                    // ✅ Budget Slider
+                    
                     VStack(alignment: .leading) {
                         Text("Budget: $\(Int(budget))")
                         Slider(value: $budget, in: 5...100, step: 1)
@@ -66,8 +58,7 @@ struct UnifiedRestaurantView: View {
                     .onChange(of: budget) {
                         applyFilters()
                     }
-
-                    // ✅ Distance Slider
+                    
                     VStack(alignment: .leading) {
                         Text("Distance: \(String(format: "%.1f", distance)) mi")
                         Slider(value: $distance, in: 1...30, step: 0.5)
@@ -76,8 +67,7 @@ struct UnifiedRestaurantView: View {
                     .onChange(of: distance) {
                         applyFilters()
                     }
-
-                    // ✅ Filtered Restaurant List
+                    
                     ForEach(displayedRestaurants) { restaurant in
                         VStack(alignment: .leading) {
                             Text(restaurant.name)
@@ -90,21 +80,19 @@ struct UnifiedRestaurantView: View {
                         .padding(.vertical, 4)
                         Divider()
                     }
-
+                    
                     Spacer()
                 }
             }
             .onAppear {
-                if restaurants.isEmpty {
-                    addSampleRestaurants()
-                }
+                resetRestaurants()
+                addSampleRestaurants()
                 applyFilters()
             }
             .navigationTitle("Restaurants")
         }
     }
-
-    // ✅ Filtering Logic
+    
     func applyFilters() {
         displayedRestaurants = restaurants.filter { r in
             let nameMatch = searchText.isEmpty || r.name.localizedCaseInsensitiveContains(searchText)
@@ -114,7 +102,7 @@ struct UnifiedRestaurantView: View {
             return nameMatch && cuisineMatch && priceMatch && distanceMatch
         }
     }
-
+    
     func priceToAverage(_ range: String) -> Double {
         switch range {
         case "$5–15": return 10
@@ -126,9 +114,16 @@ struct UnifiedRestaurantView: View {
         default: return 100
         }
     }
-
+    
+    func resetRestaurants() {
+        for restaurant in restaurants {
+            context.delete(restaurant)
+        }
+        try? context.save()
+    }
+    
     func addSampleRestaurants() {
-        let samples = [
+        let samples: [Restaurant] = [
             Restaurant(name: "Pho Real", priceRange: "$15–25", distance: 2.1, cuisine: "Vietnamese"),
             Restaurant(name: "Taco Galaxy", priceRange: "$5–15", distance: 1.4, cuisine: "Mexican"),
             Restaurant(name: "Curry Kingdom", priceRange: "$25–35", distance: 4.2, cuisine: "Indian"),
@@ -170,6 +165,7 @@ struct UnifiedRestaurantView: View {
             Restaurant(name: "Mediterraneo", priceRange: "$35–45", distance: 4.0, cuisine: "Mediterranean"),
             Restaurant(name: "Pad Thai Palace", priceRange: "$25–35", distance: 3.1, cuisine: "Thai")
         ]
+        
         for restaurant in samples {
             context.insert(restaurant)
         }
