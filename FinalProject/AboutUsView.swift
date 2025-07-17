@@ -27,11 +27,14 @@ struct AboutUsPage: View {
                             .resizable(resizingMode: .stretch)
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(100)
-                        Text("Kanmani Elan")
-                            .font(.title3)
+                        Text("Kanmani Elangovan")
+                            .font(.callout)
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
-                        Text("Put Information Here")
+                        Text("- Ellicott City, MD")
+                            .font(.callout)
+                        Text("- Interested in ")
+                            .font(.callout)
                     }//closing of VStack
                     .padding(.horizontal, 5)
                     
@@ -41,10 +44,11 @@ struct AboutUsPage: View {
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(100)
                         Text("Medha Manda")
-                            .font(.title3)
+                            .font(.callout)
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
                         Text("Put Information Here")
+                            .font(.callout)
                     }//Closing of VStack
                     .padding(.horizontal, 5)
                     
@@ -59,10 +63,11 @@ struct AboutUsPage: View {
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(100)
                         Text("Keely Hong")
-                            .font(.title3)
+                            .font(.callout)
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
                         Text("Put Information Here")
+                            .font(.callout)
                     }//closing of VStack
                     .padding(.horizontal, 5)
                     
@@ -72,10 +77,11 @@ struct AboutUsPage: View {
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(100)
                         Text("Emily Suriel")
-                            .font(.title3)
+                            .font(.callout)
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
                         Text("Put Information Here")
+                            .font(.callout)
                     }//Closing of VStack
                     .padding(.horizontal, 5)
                 }//Closing of HStack
