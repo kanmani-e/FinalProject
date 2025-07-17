@@ -114,7 +114,7 @@ struct popUp: View {
                                 .padding(.all)
                                 .frame(height: 200.0)
                             VStack{
-                                Text("Greenberg's Bagels x              Hometoen Bar-B-Que")
+                                Text("Greenberg's Bagels x              Hometown Bar-B-Que")
                                     .font(.title2)
                                     .foregroundColor(.white)
                                     .multilineTextAlignment(.center)
