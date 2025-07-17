@@ -16,7 +16,7 @@ struct ContentView: View {
 
                 VStack(spacing: 40) {
                     
-                    // App Title
+                    // app Title
                     Text("CraveNYC")
                         .font(.custom("Lobster-Regular", size: 48))
                         .foregroundColor(Color(red: 0.97, green: 0.96, blue: 0.922))
@@ -24,26 +24,40 @@ struct ContentView: View {
 
                     Spacer()
 
-                    // Go to Restaurant Search
-                    NavigationLink(destination: UnifiedRestaurantView()) {
-                        Text("🍽️ Find Restaurants")
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 40)
-                            .padding(.vertical, 16)
-                            .background(Color.blue)
-                            .cornerRadius(12)
-                    }
+                    // navigation Buttons
+                    VStack(spacing: 20) {
+                        // restaurants
+                        NavigationLink(destination: UnifiedRestaurantView()) {
+                            Text("🍽️ Find Restaurants")
+                                .font(.system(size: 22, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 40)
+                                .padding(.vertical, 16)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
 
-                    // Go to Pop-Up Events
-                    NavigationLink(destination: popUp()) {
-                        Text("🎉 View Pop-Up Events")
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 40)
-                            .padding(.vertical, 16)
-                            .background(Color.green)
-                            .cornerRadius(12)
+                        // pop-Up events
+                        NavigationLink(destination: popUp()) {
+                            Text("🎉 View Pop-Up Events")
+                                .font(.system(size: 22, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 40)
+                                .padding(.vertical, 16)
+                                .background(Color.green)
+                                .cornerRadius(12)
+                        }
+
+                        // about Us
+                        NavigationLink(destination: AboutUsPage()) {
+                            Text("ℹ️ About Us")
+                                .font(.system(size: 22, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 40)
+                                .padding(.vertical, 16)
+                                .background(Color.purple)
+                                .cornerRadius(12)
+                        }
                     }
 
                     Spacer()
@@ -62,4 +76,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
