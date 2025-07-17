@@ -30,6 +30,7 @@ struct UnifiedRestaurantView: View {
                     Text("Find Your Next NYC Bite")
                         .font(.largeTitle)
                         .bold()
+                        .foregroundColor(Color(red: 0.836, green: 0.332, blue: 0.313))
                         .padding(.top)
                     
                     TextField("Search restaurants", text: $searchText)
@@ -52,7 +53,9 @@ struct UnifiedRestaurantView: View {
                     
                     VStack(alignment: .leading) {
                         Text("Budget: $\(Int(budget))")
+                            .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
                         Slider(value: $budget, in: 5...100, step: 1)
+                            .accentColor(Color(red: 0.836, green: 0.332, blue: 0.313))
                     }
                     .padding(.horizontal)
                     .onChange(of: budget) {
@@ -61,7 +64,9 @@ struct UnifiedRestaurantView: View {
                     
                     VStack(alignment: .leading) {
                         Text("Distance: \(String(format: "%.1f", distance)) mi")
+                            .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
                         Slider(value: $distance, in: 1...30, step: 0.5)
+                            .accentColor(Color(red: 0.836, green: 0.332, blue: 0.313))
                     }
                     .padding(.horizontal)
                     .onChange(of: distance) {
@@ -69,12 +74,19 @@ struct UnifiedRestaurantView: View {
                     }
                     
                     ForEach(displayedRestaurants) { restaurant in
-                        VStack(alignment: .leading) {
-                            Text(restaurant.name)
-                                .font(.headline)
-                            Text("\(restaurant.cuisine) • \(restaurant.priceRange) • \(String(format: "%.1f", restaurant.distance)) mi")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text(restaurant.name)
+                                    .font(.headline)
+                                    .foregroundColor(Color(red: 0.836, green: 0.332, blue: 0.313))
+                                Spacer()
+                            }
+                            HStack {
+                                Text("\(restaurant.cuisine) • \(restaurant.priceRange) • \(String(format: "%.1f", restaurant.distance)) mi")
+                                    .font(.subheadline)
+                                    .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
+                                Spacer()
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.vertical, 4)
@@ -90,6 +102,8 @@ struct UnifiedRestaurantView: View {
                 applyFilters()
             }
             .navigationTitle("Restaurants")
+            .background(Color(red: 0.97, green: 0.96, blue: 0.922))
+
         }
     }
     
