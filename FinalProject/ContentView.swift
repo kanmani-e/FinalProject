@@ -8,71 +8,81 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var pressedButton: String? = nil
+
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 0.835, green: 0.333, blue: 0.314)
-                    .ignoresSafeArea()
+                // Red background with gradient
+                LinearGradient(gradient: Gradient(colors: [
+                    Color(red: 0.835, green: 0.333, blue: 0.314),
+                    Color(red: 0.7, green: 0.1, blue: 0.1)
+                ]), startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
 
-                VStack(spacing: 40) {
-                    
-                    // app Title
-                    Text("CraveNYC")
-                        .font(.custom("Lobster-Regular", size: 48))
-                        .foregroundColor(Color(red: 0.97, green: 0.96, blue: 0.922))
-                        .padding(.top, 80)
+                VStack(spacing: 30) {
+                    // App Title and Subtitle
+                    VStack(spacing: 8) {
+                        Text("CraveNYC")
+                            .font(.custom("Lobster-Regular", size: 72))
+                            .foregroundColor(.white)
+                            .shadow(color: .black.opacity(0.3), radius: 4, x: 2, y: 2)
 
-                    Spacer()
-
-                    // navigation Buttons
-                    VStack(spacing: 20) {
-                        // restaurants
-                        NavigationLink(destination: UnifiedRestaurantView()) {
-                            Text("🍽️ Find Restaurants")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 40)
-                                .padding(.vertical, 16)
-                                .background(Color.blue)
-                                .cornerRadius(12)
-                        }
-
-                        // pop-Up events
-                        NavigationLink(destination: popUp()) {
-                            Text("🎉 View Pop-Up Events")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 40)
-                                .padding(.vertical, 16)
-                                .background(Color.green)
-                                .cornerRadius(12)
-                        }
-
-                        // about Us
-                        NavigationLink(destination: AboutUsPage()) {
-                            Text("ℹ️ About Us")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 40)
-                                .padding(.vertical, 16)
-                                .background(Color.purple)
-                                .cornerRadius(12)
-                        }
+                        Text("Explore NYC’s best bites & events!")
+                            .font(.title3)
+                            .foregroundColor(.white.opacity(0.95))
                     }
+                    .padding(.top, 80)
 
                     Spacer()
 
-                    Text("Explore NYC’s best bites & events")
-                        .font(.subheadline)
-                        .foregroundColor(.white.opacity(0.8))
-                        .padding(.bottom, 40)
+                    //navigation buttons with animation
+                    VStack(spacing: 20) {
+                        animatedNavLink(title: "🍕 Find Restaurants", color: .blue, destination: UnifiedRestaurantView(), id: "restaurants")
+                        animatedNavLink(title: "🎉 View Pop-Up Events", color: .green, destination: popUp(), id: "popups")
+                        animatedNavLink(title: "ℹ️ About Us", color: .purple, destination: AboutUsPage(), id: "about")
+                    }
+                    .padding(.horizontal, 40)
+
+                    Spacer()
+
+                    //NYC skyline image
+                    Image("nycSkyline")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 200)
+                        .padding(.bottom, 20)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
                 .padding()
             }
         }
+    }
+
+    //animated navigation button
+    @ViewBuilder
+    func animatedNavLink<Destination: View>(title: String, color: Color, destination: Destination, id: String) -> some View {
+        NavigationLink(destination: destination) {
+            Text(title)
+                .font(.system(size: 22, weight: .bold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(color)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+                .scaleEffect(pressedButton == id ? 0.95 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: pressedButton == id)
+        }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in pressedButton = id }
+                .onEnded { _ in pressedButton = nil }
+        )
     }
 }
 
 #Preview {
     ContentView()
 }
+
+
