@@ -62,7 +62,7 @@ struct AboutUsPage: View {
                             .font(.title3)
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
-                        Text("Put Information Here")
+                        Text("Greenville, SC. Interested in SWE!")
                     }//closing of VStack
                     .padding(.horizontal, 5)
                     
