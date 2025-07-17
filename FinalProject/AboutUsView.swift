@@ -37,7 +37,7 @@ struct AboutUsPage: View {
                     .padding(.horizontal, 5)
                     
                     VStack{
-                        Image("dsc08195_720")
+                        Image("DSC05568 2")
                             .resizable(resizingMode: .stretch)
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(100)
@@ -45,7 +45,7 @@ struct AboutUsPage: View {
                             .font(.callout)
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
-                        Text("Put Information Here")
+                        Text("Concord, NC. Love Robotics!")
                             .font(.callout)
                     }//Closing of VStack
                     .padding(.horizontal, 5)
