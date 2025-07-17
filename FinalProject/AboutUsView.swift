@@ -33,7 +33,7 @@ struct AboutUsPage: View {
                             .foregroundColor(Color(red: 0.217, green: 0.337, blue: 0.528))
                         Text("- Ellicott City, MD")
                             .font(.callout)
-                        Text("- Interested in ")
+                        Text("- Interested in idk")
                             .font(.callout)
                     }//closing of VStack
                     .padding(.horizontal, 5)
